@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake News Detector</title>
+</head>
+<body>
+    <h1>Fake News Detector</h1>
+
+    <form method="POST">
+        <input type="text" name="url" placeholder="Enter article URL" required>
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if result %}
+        {% if result.success %}
+            <h2>Article Title: {{ result.title }}</h2>
+            <p><strong>Prediction:</strong> {{ prediction }}</p>
+            <p><strong>Domain:</strong> {{ result.domain }}</p>
+            <p><strong>Authors:</strong> {{ result.authors }}</p>
+            <p><strong>Date:</strong> {{ result.publish_date }}</p>
+            <p><strong>Text:</strong> {{ result.text[:500] }}...</p>
+        {% else %}
+            <p>Error: {{ result.error }}</p>
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>
