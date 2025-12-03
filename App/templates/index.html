@@ -11,58 +11,54 @@
 </head>
 
 <body>
-<h1>Misinformation Detector</h1>
+<div class="container">
+    <h1>Misinformation Detector</h1>
 
-<form method="POST" onsubmit="showSpinner()">
-    <input type="text" name="url" placeholder="Enter news article URL" required>
-    <button type="submit">Analyze</button>
-</form>
+    <form method="POST" onsubmit="showSpinner()" class="analyze-form">
+        <input type="text" name="url" placeholder="Enter news article URL" required>
+        <button type="submit">Analyze</button>
+    </form>
 
-<!-- Spinner -->
-<div id="spinner" style="display:none; margin-top:20px; text-align:center;">
-    <div class="loader"></div>
-    <p>Scraping article…</p>
+    <!-- Spinner -->
+    <div id="spinner" style="display:none;">
+        <div class="loader"></div>
+        <p>Scraping article…</p>
+    </div>
+
+    <div class="results">
+        {% if result %}
+        {% if result.success %}
+        <h2>Scraped Data</h2>
+        <p><strong>URL:</strong> {{ result.url }}</p>
+        <p><strong>Domain:</strong> {{ result.domain }}</p>
+        <p><strong>Title:</strong> {{ result.title }}</p>
+        <p><strong>Authors:</strong> {{ result.authors }}</p>
+        <p><strong>Publish Date:</strong> {{ result.publish_date }}</p>
+
+        <h3>Article Text</h3>
+        <div class="article-text">{{ result.text }}</div>
+
+        {% if prediction %}
+        <h2>Prediction</h2>
+        {% if prediction.prediction == 1 %}
+        <p class="misinfo">
+            ❌ Likely Misinformation
+            ({{ (prediction.probability_misinfo * 100) | round(2) }}% confidence)
+        </p>
+        {% else %}
+        <p class="credible">
+            ✔ Likely Credible
+            ({{ (prediction.probability_real * 100) | round(2) }}% confidence)
+        </p>
+        {% endif %}
+        {% endif %}
+        {% else %}
+        <h2 class="error">Error</h2>
+        <p>{{ result.error }}</p>
+        {% endif %}
+        {% endif %}
+    </div>
 </div>
-
-
-<hr>
-
-{% if result %}
-{% if result.success %}
-<h2>Scraped Data</h2>
-
-<p><strong>URL:</strong> {{ result.url }}</p>
-<p><strong>Domain:</strong> {{ result.domain }}</p>
-<p><strong>Title:</strong> {{ result.title }}</p>
-<p><strong>Authors:</strong> {{ result.authors }}</p>
-<p><strong>Publish Date:</strong> {{ result.publish_date }}</p>
-
-<h3>Article Text</h3>
-<p>{{ result.text }}</p>
-
-{% if prediction %}
-<h2>Prediction</h2>
-
-{% if prediction.prediction == 1 %}
-<p style="color:red; font-weight:bold;">
-    ❌ Likely Misinformation
-    ({{ (prediction.probability_misinfo * 100) | round(2) }}% confidence)
-</p>
-{% else %}
-<p style="color:green; font-weight:bold;">
-    ✔ Likely Credible
-    ({{ (prediction.probability_real * 100) | round(2) }}% confidence)
-</p>
-{% endif %}
-{% endif %}
-
-
-{% else %}
-<h2 style="color:red;">Error</h2>
-<p>{{ result.error }}</p>
-{% endif %}
-{% endif %}
-
-
 </body>
+
 </html>
